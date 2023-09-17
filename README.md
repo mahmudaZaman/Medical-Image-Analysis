@@ -1,4 +1,4 @@
-# Transfer Learning: Medical Image Analysis
+# Medical Image Analysis
 Welcome to the Transfer Learning project in Medical Image Analysis! This project showcases my expertise in leveraging advanced machine-learning techniques to tackle real-world healthcare challenges.
 
 ## Problem Statement
