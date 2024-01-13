@@ -1,5 +1,29 @@
+import io
+
+import boto3
+import h5py
 from PIL import ImageOps, Image
 import numpy as np
+from s3fs import S3FileSystem
+
+
+def save_model(model, bucket_name, object_key):
+    # Create bytes io as target.
+    with io.BytesIO() as model_io:
+        # Instanciate h5 file using the io.
+        with h5py.File(model_io, 'w') as model_h5:
+            # Save the Keras model to h5 object (and indirectly to bytesio).
+            model.save(model_h5)
+            # Make sure the data is written entirely to the bytesio object.
+            model_h5.flush()
+        # Upload to S3.
+        client = boto3.client('s3')
+        client.put_object(
+            Bucket=bucket_name,
+            Key=object_key,
+            Body=model_io,
+        )
+
 
 def classify(image, model, class_names):
     image = ImageOps.fit(image, (224, 224), Image.Resampling.LANCZOS)

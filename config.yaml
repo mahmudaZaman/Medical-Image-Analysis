@@ -1,0 +1,6 @@
+storage:
+  bucket_name: ml-projects-0509
+  files:
+    output_model_h5: Medical-Image-Analysis/chest_xray.h5
+data:
+  refresh: false
