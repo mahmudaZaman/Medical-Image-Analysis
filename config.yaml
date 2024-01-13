@@ -5,4 +5,4 @@ storage:
 data:
   refresh: false
 model:
-  refresh: false
+  refresh: true
