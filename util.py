@@ -20,7 +20,7 @@ def upload_local_to_s3(tmp_local_path, bucket_name, s3_path):
 def load_model_from_s3(tmp_local_path, bucket_name, s3_path):
     ignore_refresh = (os.path.isfile(tmp_local_path)) and (app_config.model.refresh is False)
     if ignore_refresh is True:
-        print("using local")
+        print("using local model file")
     else:
         print("downloading model from s3")
         s3_client = boto3.client('s3')
