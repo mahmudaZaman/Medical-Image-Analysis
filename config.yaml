@@ -4,3 +4,5 @@ storage:
     output_model_h5: Medical-Image-Analysis/chest_xray.h5
 data:
   refresh: false
+model:
+  refresh: false

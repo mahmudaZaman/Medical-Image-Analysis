@@ -5,7 +5,7 @@ from keras.src.callbacks import EarlyStopping
 from config import app_config
 from src.features.data_ingestion import DataIngestion
 from src.features.data_transformation import DataTransformation
-from util import save_model
+from util import upload_local_to_s3
 
 
 class ModelTrainer:
@@ -36,8 +36,11 @@ class ModelTrainer:
         model.fit(training_data, validation_data=testing_data, epochs=1,
                   steps_per_epoch=len(training_data), validation_steps=len(testing_data), callbacks=[early_stopping])
 
-        # model.save('chest_xray.h5')
-        save_model(model, app_config.storage.bucket_name, app_config.storage.files.output_model_h5)
+        tmp_local_path = './data/interim/chest_xray.h5'
+        model.save(tmp_local_path)
+        upload_local_to_s3(tmp_local_path, app_config.storage.bucket_name,
+                           app_config.storage.files.output_model_h5)
+        # save_model(model, app_config.storage.bucket_name, app_config.storage.files.output_model_h5)
 
 
 def run_train_pipeline():

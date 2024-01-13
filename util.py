@@ -1,28 +1,31 @@
 import io
+import os
 
 import boto3
 import h5py
+import s3fs
 from PIL import ImageOps, Image
 import numpy as np
-from s3fs import S3FileSystem
+from keras.models import load_model
+
+from config import app_config
 
 
-def save_model(model, bucket_name, object_key):
-    # Create bytes io as target.
-    with io.BytesIO() as model_io:
-        # Instanciate h5 file using the io.
-        with h5py.File(model_io, 'w') as model_h5:
-            # Save the Keras model to h5 object (and indirectly to bytesio).
-            model.save(model_h5)
-            # Make sure the data is written entirely to the bytesio object.
-            model_h5.flush()
-        # Upload to S3.
-        client = boto3.client('s3')
-        client.put_object(
-            Bucket=bucket_name,
-            Key=object_key,
-            Body=model_io,
-        )
+def upload_local_to_s3(tmp_local_path, bucket_name, s3_path):
+    s3_client = boto3.client('s3')
+    s3_client.upload_file(tmp_local_path, bucket_name, s3_path)
+    os.remove(tmp_local_path)
+
+
+def load_model_from_s3(tmp_local_path, bucket_name, s3_path):
+    ignore_refresh = (os.path.isfile(tmp_local_path)) and (app_config.model.refresh is False)
+    if ignore_refresh is True:
+        print("using local")
+    else:
+        print("downloading model from s3")
+        s3_client = boto3.client('s3')
+        s3_client.download_file(bucket_name, s3_path, tmp_local_path)
+    return load_model(tmp_local_path)
 
 
 def classify(image, model, class_names):
@@ -36,3 +39,8 @@ def classify(image, model, class_names):
     index = 0 if prediction[0][0] <= 0.5 else 1
     class_name = class_names[index]
     return class_name
+
+
+if __name__ == '__main__':
+    model = load_model_from_s3("./data/interim/chest_xray.h5", app_config.storage.bucket_name,
+                               app_config.storage.files.output_model_h5)

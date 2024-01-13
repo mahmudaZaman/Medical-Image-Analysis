@@ -16,9 +16,14 @@ class DataConfig(BaseModel):
     refresh: bool
 
 
+class ModelConfig(BaseModel):
+    refresh: bool
+
+
 class AppConfig(BaseModel):
     storage: StorageConfig
     data: DataConfig
+    model: ModelConfig
 
 
 # Load YAML content

@@ -1,13 +1,14 @@
 import os
 
+import h5py
+import s3fs
 import streamlit as st
-from keras.models import load_model
 from PIL import Image
 
 from config import app_config
 from src.data.make_dataset import download_data
 from src.models.train_model import run_train_pipeline
-from util import classify
+from util import classify, load_model_from_s3
 
 
 def streamlit_run():
@@ -15,8 +16,8 @@ def streamlit_run():
     st.header('Please upload a chest X-ray image')
     file = st.file_uploader('', type=['jpeg', 'jpg', 'png'])
 
-    # load classifier
-    model = load_model('/Users/shuchi/Documents/work/personal/python/medical_image_analysis/chest_xray.h5')
+    model = load_model_from_s3("./data/interim/chest_xray.h5", app_config.storage.bucket_name,
+                               app_config.storage.files.output_model_h5)
     class_names = ["NORMAL", "PNEUMONIA"]
 
     if file is not None:
@@ -32,6 +33,7 @@ def model_run():
 
 if __name__ == '__main__':
     if app_config.data.refresh is True:
+        print("downloading data from kaggle")
         download_data()
     mode = os.getenv("mode", "streamlit")
     print("mode", mode)
