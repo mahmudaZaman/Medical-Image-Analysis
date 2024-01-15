@@ -6,6 +6,10 @@ The primary goal of this project is to apply transfer learning to pre-trained me
 
 For this project, I utilized  Chest X-rays(from Kaggle), for diagnosing diseases like Pneumonia containing labeled images. These datasets served as the foundation for training and fine-tuning the models to achieve precise disease diagnosis.
 
+## Model
+
+Employing the power of TensorFlow, I constructed a robust system for predicting Pneumonia in medical images, capitalizing on the strengths of pre-trained models. These pre-existing models bring heightened accuracy and efficiency to diagnostic processes, leveraging their vast knowledge gained from extensive training on diverse datasets.
+
 ## AWS Integration With Amazon S3
 
 I've seamlessly integrated Amazon Web Services (AWS) into this project to leverage their cutting-edge tools and capabilities. The trained model has been securely stored on AWS S3 for efficient accessibility. In addition, a user-friendly interface has been developed using Streamlit, enabling users to upload Chest X-ray images. The underlying model, loaded directly from AWS S3, predicts the likelihood of Pneumonia, enhancing user interaction and diagnostic capabilities.
